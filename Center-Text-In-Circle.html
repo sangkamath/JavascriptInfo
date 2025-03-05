@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Centered Text in Circle</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100xh;
+            background-color: #f4f4f4;
+            margin:0
+        }
+
+        .circle {
+            width: 200px;
+            height: 200px;
+            background-color: #3498db;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .text {
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="circle">
+        <span class="text">Hello</span>
+    </div>
+
+    <script>
+        // getting it
+        /*
+        .circle
+
+        A div with border-radius: 50% creates the circular shape.
+        display: flex along with justify-content: center and align-items: center ensures perfect centering of the text.
+        .text
+        The text is centered inside the circle.
+        text-align: center ensures proper alignment.
+
+        //document.querySelector(".text").textContent = "Centered!";
+        */
+        document.querySelector(".text").textContent = "Centered!";
+    </script>
+</body>
+
+</html>

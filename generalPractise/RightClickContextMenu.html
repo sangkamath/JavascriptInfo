@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Right-Click Menu</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            height: 100vh;
+        }
+
+        .context-menu {
+            position: absolute;
+            background: white;
+            border: 1px solid #ccc;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+            display: none;
+            z-index: 1000;
+        }
+
+        .menu-item {
+            padding: 8px 15px;
+            cursor: pointer;
+        }
+
+        .menu-item:hover {
+            background: lightgray;
+        }
+    </style>
+</head>
+<body>
+    <p>Right-click anywhere on this page to open the custom menu.</p>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+
+        const menu = document.createElement("div");
+        menu.classList.add("context-menu");
+
+        const item1 = document.createElement("div");
+        item1.classList.add("menu-item");
+        item1.innerText = "Refresh Page";
+        item1.addEventListener("click", () => location.reload());
+
+        const item2 = document.createElement("div");
+        item2.classList.add("menu-item");
+        item2.innerText = "Alert Message";
+        item2.addEventListener("click", () => alert("Hello!"));
+
+        menu.appendChild(item1);
+        menu.appendChild(item2);
+
+        document.body.appendChild(menu);
+
+        document.addEventListener("contextmenu", function(event) {
+            event.preventDefault();
+            menu.style.left = `${event.pageX}px`;
+            menu.style.top = `${event.pageY}px`;
+            menu.style.display = "block";
+        })
+
+        document.addEventListener("click", function() {
+            menu.style.display = "none";
+        })
+    })
+</script>
+</body>
+</html>

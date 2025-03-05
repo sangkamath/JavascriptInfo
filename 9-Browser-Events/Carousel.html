@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <div id="carousel" class="carousel">
+    <button class="arrow prev">⇦</button>
+    <div class="gallery">
+      <ul>
+        <li><img src="https://en.js.cx/carousel/1.png"></li>
+        <li><img src="https://en.js.cx/carousel/2.png"></li>
+        <li><img src="https://en.js.cx/carousel/3.png"></li>
+        <li><img src="https://en.js.cx/carousel/4.png"></li>
+        <li><img src="https://en.js.cx/carousel/5.png"></li>
+        <li><img src="https://en.js.cx/carousel/6.png"></li>
+        <li><img src="https://en.js.cx/carousel/7.png"></li>
+        <li><img src="https://en.js.cx/carousel/8.png"></li>
+        <li><img src="https://en.js.cx/carousel/9.png"></li>
+        <li><img src="https://en.js.cx/carousel/10.png"></li>
+      </ul>
+    </div>
+    <button class="arrow next">⇨</button>
+  </div>
+
+  <script>
+    /* label the images, just for convenience, to visually track them */
+    let i = 1;
+    for(let li of carousel.querySelectorAll('li')) {
+      li.style.position = 'relative';
+      li.insertAdjacentHTML('beforeend', `<span style="position:absolute;left:0;top:0">${i}</span>`);
+      i++;
+    }
+
+    /* configuration */
+    let width = 130; // image width
+    let count = 3; // visible images count
+
+    let list = carousel.querySelector('ul');
+    let listElems = carousel.querySelectorAll('li');
+
+    let position = 0; // ribbon scroll position
+
+    carousel.querySelector('.prev').onclick = function() {
+      // shift left
+      position += width * count;
+      // can't move to the left too much, end of images
+      position = Math.min(position, 0)
+      list.style.marginLeft = position + 'px';
+    };
+
+    carousel.querySelector('.next').onclick = function() {
+      // shift right
+      position -= width * count;
+      // can only shift the ribbbon for (total ribbon length - visible count) images
+      position = Math.max(position, -width * (listElems.length - count));
+      list.style.marginLeft = position + 'px';
+    };
+
+    /*
+The images ribbon can be represented as ul/li list of images <img>.
+
+Normally, such a ribbon is wide, but we put a fixed-size <div> 
+    around to “cut” it, so that only a part of the ribbon is visible:
+
+
+To make the list show horizontally we need to apply correct CSS 
+properties for <li>, like display: inline-block.
+
+For <img> we should also adjust display, because by default 
+it’s inline. There’s extra space reserved under inline elements 
+for “letter tails”, so we can use display:block to remove it.
+
+To do the scrolling, we can shift <ul>. There are many ways 
+    to do it, for instance by changing margin-left or 
+    (better performance) use transform: translateX():
+
+
+The outer <div> has a fixed width, so “extra” images are cut.
+
+The whole carousel is a self-contained “graphical component” on 
+the page, so we’d better wrap it into a single <div class="carousel"> 
+    and style things inside it.
+
+When an event happens – the most nested element where it happens 
+gets labeled as the “target element” (event.target).
+
+Then the event moves down from the document root to event.target, 
+calling handlers assigned with addEventListener(..., true) on the 
+way (true is a shorthand for {capture: true}).
+Then handlers are called on the target element itself.
+Then the event bubbles up from event.target to the root, calling 
+handlers assigned using on<event>, HTML attributes and addEventListener 
+    without the 3rd argument or with the 3rd argument false/{capture:false}.
+Each handler can access event object properties:
+
+event.target – the deepest element that originated the event.
+event.currentTarget (=this) – the current element that handles the 
+event (the one that has the handler on it)
+event.eventPhase – the current phase (capturing=1, target=2, bubbling=3).
+Any event handler can stop the event by calling event.stopPropagation(), 
+but that’s not recommended, because we can’t really be sure we won’t 
+need it above, maybe for completely different things.
+
+The capturing phase is used very rarely, usually we handle events 
+on bubbling. And there’s a logical explanation for that.
+
+In real world, when an accident happens, local authorities react 
+first. They know best the area where it happened. Then higher-level 
+authorities if needed.
+
+The same for event handlers. The code that set the handler on a 
+particular element knows maximum details about the element and 
+what it does. A handler on a particular <td> may be suited for 
+    that exactly <td>, it knows everything about it, so it should 
+        get the chance first. Then its immediate parent also 
+        knows about the context, but a little bit less, and so 
+        on till the very top element that handles general concepts and runs the last one.
+
+Bubbling and capturing lay the foundation for “event delegation” – 
+an extremely powerful event handling pattern that we study in the next chapter.
+
+Event delegation is really cool! It’s one of the most helpful patterns for DOM events.
+
+It’s often used to add the same handling for many similar elements, but not only for that.
+
+The algorithm:
+
+Put a single handler on the container.
+In the handler – check the source element event.target.
+If the event happened inside an element that interests us, then handle the event.
+Benefits:
+
+Simplifies initialization and saves memory: no need to add many handlers.
+Less code: when adding or removing elements, no need to add/remove handlers.
+DOM modifications: we can mass add/remove elements with innerHTML and the like.
+The delegation has its limitations of course:
+
+First, the event must be bubbling. Some events do not bubble. Also, low-level handlers 
+should not use event.stopPropagation().
+Second, the delegation may add CPU load, because the container-level handler reacts 
+on events in any place of the container, no matter whether they interest us or not. 
+But usually the load is negligible, so we don’t take it into account.
+
+    */
+  </script>
+
+</body>
+</html>

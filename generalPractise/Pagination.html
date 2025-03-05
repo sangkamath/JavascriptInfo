@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paginated Address Table with Search & Sort</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+            flex-direction: column;
+        }
+
+        .container {
+            width: 700px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+
+        button {
+            padding: 8px 15px;
+            border: none;
+            background: #007bff;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Shipping Addresses</h2>
+        <input type="text" id="search-input" placeholder="Search by Name, City, or ZIP">
+        <table>
+            <thead>
+                <tr>
+                    <th onclick="sortTable('name')">Name ▲▼</th>
+                    <th onclick="sortTable('street')">Street ▲▼</th>
+                    <th onclick="sortTable('city')">City ▲▼</th>
+                    <th onclick="sortTable('state')">State ▲▼</th>
+                    <th onclick="sortTable('zip')">ZIP Code ▲▼</th>
+                </tr>
+            </thead>
+            <tbody id="address-body"></tbody>
+        </table>
+        <div class="pagination">
+            <button id="prev-btn" disabled>Previous</button>
+            <span id="page-info"></span>
+            <button id="next-btn">Next</button>
+        </div>
+    </div>
+
+    <script>
+        let addresses = [
+            { name: "John Doe", street: "123 Main St", city: "New York", state: "NY", zip: "10001" },
+            { name: "Jane Smith", street: "456 Elm St", city: "Los Angeles", state: "CA", zip: "90001" },
+            { name: "Sam Brown", street: "789 Oak St", city: "Chicago", state: "IL", zip: "60601" },
+            { name: "Lisa White", street: "101 Pine St", city: "Houston", state: "TX", zip: "77001" },
+            { name: "Mike Green", street: "202 Maple St", city: "Phoenix", state: "AZ", zip: "85001" },
+            { name: "Emma Blue", street: "303 Cedar St", city: "Philadelphia", state: "PA", zip: "19101" },
+            { name: "Oliver Red", street: "404 Birch St", city: "San Antonio", state: "TX", zip: "78201" },
+            { name: "Ava Yellow", street: "505 Spruce St", city: "San Diego", state: "CA", zip: "92101" },
+            { name: "Liam Purple", street: "606 Willow St", city: "Dallas", state: "TX", zip: "75201" },
+            { name: "Sophia Pink", street: "707 Redwood St", city: "San Jose", state: "CA", zip: "95101" }
+        ];
+
+        let filteredAddresses = [...addresses]; // Filtered version of addresses
+        let itemsPerPage = 5;
+        let currentPage = 1;
+        let currentSortColumn = "";
+        let sortAscending = true;
+
+        const addressBody = document.getElementById("address-body");
+        const prevBtn = document.getElementById("prev-btn");
+        const nextBtn = document.getElementById("next-btn");
+        const pageInfo = document.getElementById("page-info");
+        const searchInput = document.getElementById("search-input");
+
+        function renderPage() {
+            addressBody.innerHTML = "";
+            const start = (currentPage - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const paginatedAddresses = filteredAddresses.slice(start, end);
+
+            paginatedAddresses.forEach(address => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td>${address.name}</td>
+                    <td>${address.street}</td>
+                    <td>${address.city}</td>
+                    <td>${address.state}</td>
+                    <td>${address.zip}</td>
+                `;
+                addressBody.appendChild(tr);
+            });
+
+            pageInfo.textContent = `Page ${currentPage} of ${Math.ceil(filteredAddresses.length / itemsPerPage)}`;
+
+            prevBtn.disabled = currentPage === 1;
+            nextBtn.disabled = currentPage === Math.ceil(filteredAddresses.length / itemsPerPage);
+        }
+
+        function filterAddresses() {
+            const query = searchInput.value.toLowerCase();
+            filteredAddresses = addresses.filter(address => 
+                address.name.toLowerCase().includes(query) ||
+                address.city.toLowerCase().includes(query) ||
+                address.zip.includes(query)
+            );
+            currentPage = 1; // Reset to first page
+            renderPage();
+        }
+
+        function sortTable(column) {
+            if (currentSortColumn === column) {
+                sortAscending = !sortAscending;
+            } else {
+                currentSortColumn = column;
+                sortAscending = true;
+            }
+
+            filteredAddresses.sort((a, b) => {
+                if (a[column] < b[column]) return sortAscending ? -1 : 1;
+                if (a[column] > b[column]) return sortAscending ? 1 : -1;
+                return 0;
+            });
+
+            renderPage();
+        }
+
+        prevBtn.addEventListener("click", () => {
+            if (currentPage > 1) {
+                currentPage--;
+                renderPage();
+            }
+        });
+        nextBtn.addEventListener("click", () => {
+            if (currentPage < Math.ceil(filteredAddresses.length / itemsPerPage)) {
+                currentPage++;
+                renderPage();
+            }
+        });
+
+        searchInput.addEventListener("input", filterAddresses);
+
+        renderPage();
+    </script>
+
+</body>
+</html>

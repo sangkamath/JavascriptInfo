@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+
+    <p style="color: rgb(255, 255, 255);">White text</p>
+    <div style="color: rgb(255, 255, 255);">Another white text</div>
+    <span style="color: black;">Black text</span>
+
+    <script>
+        // getting it
+        function getElementsByStyle(property, value) {
+            const result = [];
+
+            function traverse(node) {
+                if (!node || node.nodeType !== Node.ELEMENT_NODE) return;
+
+                const computedStyle = getComputedStyle(node);
+                if (computedStyle.getPropertyValue(property) === value) {
+                    result.push(node);
+                }
+
+                for (const child of node.children) {
+                    traverse(child);
+                }
+            }
+
+            traverse(document.body);
+            return result;
+        }
+
+        function getElementsByStyleDiff(prop, value) {
+            let elements = [];
+            const _getElementFromNode = function (node) {
+                if (node) {
+                    for (let i = 0; i < node.children.length; i++) {
+                        let element = node.children[i];
+                        let styles = getComputedStyle(element);
+                        if (styles && styles.getPropertyValue(prop) === value) {
+                            elements.push(element);
+                        }
+                        if (element.childElementCount) {
+                            _getElementFromNode(element);
+                        }
+                    }
+                }
+            }
+            if (document.body.hasChildNodes()) {
+                _getElementFromNode(document.body);
+            }
+            return elements;
+        }
+
+
+        const whiteTextElements = getElementsByStyle("color", "rgb(255, 255, 255)");
+        console.log(whiteTextElements);
+
+        const whiteTextElementsDiff = getElementsByStyleDiff("color", "rgb(255, 255, 255)");
+        console.log(whiteTextElements);
+    </script>
+</body>
+
+</html>

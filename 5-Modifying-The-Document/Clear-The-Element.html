@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<ol id="elem">
+    <li>Hello</li>
+    <li>World</li>
+</ol>
+
+<body>
+    <script>
+        let text = '<b>text</b>';
+
+        elem1.append(document.createTextNode(text));
+        elem2.innerHTML = text;
+        elem3.textContent = text;
+
+        /*
+        WRONG to do it this way: function clear(elem) {
+        for (let i=0; i < elem.childNodes.length; i++) {
+            elem.childNodes[i].remove();
+            }
+        }
+        That won’t work, because the call to remove() 
+        shifts the collection elem.childNodes, so elements 
+        start from the index 0 every time. But i increases, 
+        and some elements will be skipped.
+
+        The for..of loop also does the same.
+        */
+        function clear(elem) {
+            while (elem.firstChild) {
+                elem.firstChild.remove();
+            }
+        }
+
+        function clear(elem) {
+            elem.innerHTML = '';
+        }
+
+        clear(elem);
+    </script>
+</body>

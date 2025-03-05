@@ -1,0 +1,74 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <style>
+    #field {
+      width: 200px;
+      border: 10px groove black;
+      background-color: #00FF00;
+      position: relative;
+    }
+
+    #ball {
+      position: absolute;
+    }
+  </style>
+</head>
+
+<body>
+
+
+  <div id="field">
+    <img src="https://en.js.cx/clipart/ball.svg" width="40" height="40" id="ball"> . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+    . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+  </div>
+
+
+  <script>
+    // ball.offsetWidth=0 before image loaded!
+    // to fix: set width
+    ball.style.left = Math.round(field.clientWidth / 2 - ball.offsetWidth / 2) + 'px'
+    ball.style.top = Math.round(field.clientHeight / 2 - ball.offsetHeight / 2) + 'px'
+
+    /*
+    The ball has position:absolute. It means that its left/top 
+    coordinates are measured from the nearest positioned element, that 
+    is #field (because it has position:relative).
+
+    The coordinates start from the inner left-upper corner of the field:
+    The inner field width/height is clientWidth/clientHeight. So the field center 
+    has coordinates (clientWidth/2, clientHeight/2).
+
+    …But if we set ball.style.left/top to such values, then not the ball as a 
+    whole, but the left-upper edge of the ball would be in the center:
+
+    Attention: the pitfall!
+    The code won’t work reliably while <img> has no width/height:
+
+    When the browser does not know the width/height of an image 
+    (from tag attributes or CSS), then it assumes them to equal 0 
+    until the image finishes loading.
+
+    So the value of ball.offsetWidth will be 0 until the image loads. 
+    That leads to wrong coordinates in the code above.
+
+    After the first load, the browser usually caches the image, and on 
+    reloads it will have the size immediately. But on the first load 
+    the value of ball.offsetWidth is 0.
+
+    We should fix that by adding width/height to <img>:
+
+    <img src="ball.png" width="40" height="40" id="ball">
+    …Or provide the size in CSS:
+    #ball {
+        width: 40px;
+        height: 40px;
+    }
+    */
+  </script>
+
+
+</body>
+
+</html>

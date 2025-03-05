@@ -1,0 +1,53 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <meta charset="utf-8">
+</head>
+
+<body>
+
+  <input type="button" id="hider" value="Click to hide the text" />
+
+  <!--Hide self-->
+  <input type="button" onclick="this.hidden=true" value="Click to hide">
+
+  <div id="text">Text</div>
+
+  <script>
+    // Here it doesn't matter how we hide the text,
+    // could also use style.display:
+    document.getElementById('hider').onclick = function() {
+      document.getElementById('text').hidden = true;
+    }
+
+    //Which handlers run on click after the following code? 
+    // Which alerts show up?
+    button.addEventListener("click", () => alert("1"));
+
+    button.removeEventListener("click", () => alert("1"));
+
+    button.onclick = () => alert(2);
+
+    /*
+    The answer: 1 and 2.
+
+    The first handler triggers, because it’s not removed by removeEventListener. 
+    To remove the handler we need to pass exactly the function that was 
+    assigned. And in the code a new function is passed, that looks the same, 
+    but is still another function.
+
+    To remove a function object, we need to store a reference to it, like this:
+
+    function handler() {
+        alert(1);
+    }
+
+    button.addEventListener("click", handler);
+    button.removeEventListener("click", handler);
+    The handler button.onclick works independently and in addition to 
+    addEventListener.
+    */
+  </script>
+</body>
+</html>

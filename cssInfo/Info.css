@@ -1,0 +1,485 @@
+/*
+
+1. What are CSS Grid and Flexbox? How do they differ?
+Answer:
+CSS Grid and Flexbox are both layout systems in CSS3 
+designed for different use cases:
+
+CSS Grid is a two-dimensional layout system 
+(rows and columns), useful for structuring entire page layouts.
+Flexbox is a one-dimensional layout system 
+(either row or column), ideal for aligning items inside a container.
+Example:
+
+
+/* CSS Grid */
+.container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+/* Flexbox */
+.flex-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/*
+Key Difference: Use Grid for large-scale layouts 
+and Flexbox for aligning smaller components.
+
+2. How do you create a responsive design without 
+using media queries?
+Answer:
+While media queries are a standard way to make 
+designs responsive, other techniques include:
+
+Flexbox & Grid auto-sizing using minmax(), auto-fit, and auto-fill.
+CSS clamp(), max(), and min() functions for dynamic sizing.
+Viewport units (vw, vh) to create fluid typography and layouts.
+Example:
+
+*/
+.container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+h1 {
+  font-size: clamp(1rem, 2.5vw, 3rem);
+}
+/*
+This ensures items shrink and grow dynamically 
+without explicit media queries.
+*/
+
+/*
+3. Explain how you would optimize CSS for performance 
+in a large-scale application.
+Answer:
+To optimize CSS performance in a large-scale app:
+
+Use a modular approach: Avoid global styles, prefer CSS 
+modules, BEM, or utility classes (Tailwind).
+Reduce CSS file size: Minify CSS and eliminate unused 
+styles (e.g., PurgeCSS).
+Reduce reflows and repaints: Minimize unnecessary style
+ recalculations (e.g., avoid position: absolute unnecessarily).
+Use hardware-accelerated animations: Prefer transform: 
+translate3d(0, 0, 0); over top/left for smoother animations.
+Leverage CSS variables (--var) instead of repeated values 
+for consistency and performance.
+4. How does position: sticky; work, and how is it 
+different from fixed and absolute?
+Answer:
+position: sticky; keeps an element fixed within 
+its parent container when scrolling but remains relative otherwise.
+position: fixed; keeps an element fixed on the 
+viewport, ignoring parent containers.
+position: absolute; removes the element from the 
+normal flow and positions it relative to the nearest 
+positioned ancestor.
+Example:
+*/
+
+.sticky-header {
+  position: sticky;
+  top: 0;
+  background: white;
+}
+/*
+This keeps a header fixed at the top only when 
+scrolling inside its parent container.
+*/
+
+/*
+5. How do CSS variables (--var) differ from SASS/LESS variables?
+Answer:
+CSS variables (--var) are dynamic and live in the browser, 
+while SASS/LESS variables are compiled at build time.
+
+Example of CSS Variables (Live in Browser, Can Change at Runtime)
+*/
+:root {
+  --primary-color: blue;
+}
+
+.button {
+  background: var(--primary-color);
+}
+/*
+You can update CSS variables dynamically using JavaScript:
+
+
+document.documentElement.style.setProperty('--primary-color', 'red');
+Whereas SASS/LESS variables are pre-compiled 
+and cannot be changed at runtime.
+*/
+
+/*
+6. What are the different values for display and 
+when would you use them?
+Answer:
+Some key display values include:
+
+block: Takes full width, starts on a new line (<div>, <p>).
+inline: Only takes as much space as needed (<span>, <a>).
+inline-block: Behaves like inline, but allows setting width and height.
+flex: Enables Flexbox layout.
+grid: Enables CSS Grid layout.
+none: Hides the element from the document flow.
+Example Usage:
+
+*/
+.menu {
+  display: flex; /* Use flexbox */
+}
+
+.hidden {
+  display: none; /* Hide element */
+}
+/*
+7. What is the difference between em, rem, vh, and vw units?
+Answer:
+em: Relative to the font-size of the parent.
+rem: Relative to the root element (html).
+vh: Percentage of the viewport height.
+vw: Percentage of the viewport width.
+Example:
+*/
+
+
+p {
+  font-size: 2em; /* Twice the size of its parent */
+}
+
+h1 {
+  font-size: 2rem; /* Twice the size of the root element */
+}
+/*
+Use rem for consistency and vh/vw for full-page layouts.
+*/
+
+/*
+
+8. Explain the difference between opacity: 0;, visibility: hidden;, and display: none;.
+Answer:
+Property	Element Visible?	Affects Layout?	Can Interact?
+opacity: 0;	❌ No	✅ Yes	✅ Yes
+visibility: hidden;	❌ No	✅ Yes	❌ No
+display: none;	❌ No	❌ No	❌ No
+Example:
+*/
+
+
+.hidden-opacity {
+  opacity: 0; /* Element is still present and takes up space */
+}
+
+.hidden-visibility {
+  visibility: hidden; /* Element is hidden but space remains */
+}
+
+.hidden-display {
+  display: none; /* Element is removed from the layout */
+}
+/*
+Use opacity for fade effects, visibility 
+for temporary hiding, and display: none for 
+completely removing elements.
+*/
+
+/*
+9. What are pseudo-elements and pseudo-classes in CSS?
+Answer:
+Pseudo-classes (:hover, :nth-child) style elements based on state.
+Pseudo-elements (::before, ::after) insert virtual elements 
+before/after content.
+
+*/
+
+
+button:hover {
+  background: lightblue;
+}
+
+p::before {
+  content: "💡 ";
+  font-weight: bold;
+}
+/*
+This adds a lightbulb emoji before every <p>.
+*/
+
+/*
+10. How do you create an animation using @keyframes?
+Answer:
+CSS animations are defined using @keyframes and 
+applied via animation.
+*/
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.box {
+  animation: slideIn 1s ease-in-out;
+}
+/*
+This smoothly slides an element from the left over 1 second.
+*/
+
+
+Challenge 1: Create a Responsive Grid Without Media Queries
+Problem:
+You need to create a responsive grid layout where items automatically adjust based on available space without using media queries.
+
+Solution: Use grid-template-columns with auto-fit or auto-fill
+css
+Copy
+Edit
+.container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px;
+}
+
+.item {
+  background: lightblue;
+  padding: 20px;
+  text-align: center;
+}
+✅ Explanation:
+
+auto-fit makes items shrink or expand dynamically to fit available space.
+minmax(200px, 1fr) ensures each item is at least 200px wide but can expand if there’s extra space.
+Challenge 2: Prevent a Child Element from Overflowing its Parent
+Problem:
+You have a child element that contains long text or an image, and it overflows outside its parent container.
+
+Solution: Use overflow: hidden; text-overflow: ellipsis;
+css
+Copy
+Edit
+.container {
+  width: 300px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border: 1px solid #000;
+}
+html
+Copy
+Edit
+<div class="container">
+  This is a very long text that will not fit in the container.
+</div>
+✅ Explanation:
+
+white-space: nowrap; prevents text from wrapping.
+overflow: hidden; hides overflow content.
+text-overflow: ellipsis; adds ... when text overflows.
+Challenge 3: Create a Pure CSS Tooltip
+Problem:
+Build a tooltip that appears when hovering over an element without JavaScript.
+
+Solution: Use ::after and hover
+css
+Copy
+Edit
+.tooltip {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.tooltip::after {
+  content: "This is a tooltip!";
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  transform: translateX(-50%);
+  background: black;
+  color: white;
+  padding: 5px;
+  border-radius: 5px;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.tooltip:hover::after {
+  opacity: 1;
+  visibility: visible;
+}
+✅ Explanation:
+
+::after creates the tooltip content dynamically.
+opacity: 0; visibility: hidden; keeps it hidden initially.
+hover changes opacity: 1; visibility: visible; to reveal the tooltip.
+Challenge 4: Center a Div Vertically and Horizontally
+Problem:
+How do you center a div both vertically and horizontally inside its parent?
+
+Solution 1: Use flexbox
+css
+Copy
+Edit
+.parent {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.child {
+  background: lightcoral;
+  padding: 20px;
+}
+✅ Explanation:
+
+justify-content: center; centers horizontally.
+align-items: center; centers vertically.
+height: 100vh; makes the parent full height of the viewport.
+Solution 2: Use grid
+css
+Copy
+Edit
+.parent {
+  display: grid;
+  place-items: center;
+  height: 100vh;
+}
+✅ Explanation:
+
+place-items: center; is shorthand for justify-items: center; align-items: center;.
+Challenge 5: Make a CSS-only Dropdown Menu
+Problem:
+Create a dropdown menu using only CSS.
+
+Solution: Use hover and position: absolute;
+css
+Copy
+Edit
+.menu {
+  position: relative;
+  display: inline-block;
+}
+
+.menu-button {
+  background: blue;
+  color: white;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.menu-items {
+  position: absolute;
+  left: 0;
+  top: 100%;
+  background: white;
+  padding: 10px;
+  border: 1px solid #ccc;
+  display: none;
+}
+
+.menu:hover .menu-items {
+  display: block;
+}
+✅ Explanation:
+
+display: none; hides the dropdown initially.
+hover on .menu makes .menu-items appear.
+Challenge 6: Smooth CSS Animations Without JavaScript
+Problem:
+You need to animate an element when it enters the viewport, without using JavaScript.
+
+Solution: Use @keyframes + animation
+css
+Copy
+Edit
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animated-element {
+  animation: fadeIn 1s ease-in-out;
+}
+✅ Explanation:
+
+opacity: 0 → 1 makes the element fade in.
+translateY(20px) → 0 gives it a smooth entrance effect.
+Challenge 7: Implement a Dark Mode Toggle
+Problem:
+Allow users to switch between light mode and dark mode dynamically.
+
+Solution: Use CSS Variables
+css
+Copy
+Edit
+:root {
+  --bg-color: white;
+  --text-color: black;
+}
+
+.dark-mode {
+  --bg-color: black;
+  --text-color: white;
+}
+
+body {
+  background: var(--bg-color);
+  color: var(--text-color);
+}
+html
+Copy
+Edit
+<button onclick="document.body.classList.toggle('dark-mode')">
+  Toggle Dark Mode
+</button>
+✅ Explanation:
+
+CSS variables (--bg-color, --text-color) make it easy to switch themes dynamically.
+classList.toggle('dark-mode') applies dark mode without reloading the page.
+Challenge 8: Create a Loading Skeleton Placeholder
+Problem:
+Before content loads, show a loading skeleton.
+
+Solution: Use @keyframes and background: linear-gradient
+css
+Copy
+Edit
+.skeleton {
+  width: 100px;
+  height: 20px;
+  background: linear-gradient(90deg, #ddd 25%, #eee 50%, #ddd 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite linear;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+✅ Explanation:
+
+linear-gradient creates a shimmer effect.
+animation: skeleton-loading 1.5s infinite; animates the loading effect.

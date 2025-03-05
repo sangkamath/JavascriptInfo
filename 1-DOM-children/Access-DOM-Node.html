@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+    <div>Users:</div>
+    <ul>
+        <li>John</li>
+        <li>Pete</li>
+    </ul>
+    <script>
+        //The <div> DOM node:
+        console.log(document.body.firstElementChild);
+        // or
+        console.log(document.body.children[0]);
+        // or (the first node is space, so we take 2nd)
+        console.log(document.body.childNodes[1]);
+
+        //The <ul> DOM node:
+        console.log(document.body.lastElementChild);
+        // or
+        console.log(document.body.children[1]);
+
+        //The second <li> Pete
+        console.log(body.lastElementChild.lastElementChild);
+
+        /*
+        If elem – is an arbitrary DOM element node…
+
+        Is it true that elem.lastChild.nextSibling is always null?
+        Is it true that elem.children[0].previousSibling is always null ?
+
+        Yes, true. The element elem.lastChild is always the last one, 
+        it has no nextSibling.
+        No, wrong, because elem.children[0] is the first child among 
+        elements. But there may exist non-element nodes before it. 
+        So previousSibling may be a text node.
+        Please note: for both cases if there are no children, 
+        then there will be an error.
+
+        If there are no children, elem.lastChild is null, s
+        o we can’t access elem.lastChild.nextSibling. 
+        And the collection elem.children is empty (like an empty array []).
+        */
+    </script>
+</body>
+
+</html>

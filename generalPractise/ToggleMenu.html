@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale-1.0">
+        <title>Toggleable Menu</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+            }
+
+            .menu {
+                position: absolute;
+                top: 50px;
+                left: 50px;
+                background: white;
+                border: 1px solid #ccc;
+                padding: 10px;
+                box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+                display: none;
+            }
+
+            .menu-item {
+                padding: 5px 10px;
+                cursor: pointer;
+            }
+
+            .menu-item:hover {
+                background: lightgray;
+            }
+
+            .toggle-btn {
+                padding: 10px 15p;
+                background: blue;
+                color: white;
+                border: none;
+                cursor: pointer;
+            }
+        </style>
+    </head>
+    <body>
+        <button class="toggle-btn">Toggle Menu</button>
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                const menu = document.createElement("div");
+                menu.classList.add("menu");
+
+                const item1 = document.createElement("div");
+                item1.classList.add("menu-item");
+                item1.innerText = "Option 1";
+                item1.addEventListener("click", () => alert("Option 1 clicked"));
+
+                const item2 = document.createElement("div");
+                item2.classList.add("menu-item");
+                item2.innerText = "Option 2";
+                item2.addEventListener("click", () => alert("Option 2 clicked"));
+
+                menu.appendChild(item1);
+                menu.appendChild(item2);
+
+                document.body.appendChild(menu);
+                const button =  document.querySelector(".toggle-btn");  
+                button.addEventListener("click", function(event) {
+                    const rect = button.getBoundingClientRect();
+                    menu.style.left = `${rect.left}px`;
+                    menu.style.top = `${rect.bottom + 5}px`;
+                    menu.style.display = menu.style.display === "block" ? "none" : "block";
+                });
+
+                document.addEventListener("click", function(event) {
+                    if(!menu.contains(event.target) && event.target !== button) {
+                        menu.style.display = "none";
+                    }
+                })
+            })
+        </script>
+    </body>
+</html>
