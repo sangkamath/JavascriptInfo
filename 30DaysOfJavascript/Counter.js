@@ -22,3 +22,36 @@ var createCounter = function(n) {
  * counter() // 11
  * counter() // 12
  */
+
+/**
+ * @param {number} initialValue
+ * @return {Function}
+ */
+export default function makeCounter(initialValue = 0) {
+    let count = initialValue - 1;
+  
+    return () => {
+      count += 1;
+      return count;
+    };
+  }
+
+  /**
+ * @param {number} initialValue
+ * @return {Function}
+ */
+export default function makeCounter(initialValue = 0) {
+    let count = initialValue;
+  
+    return () => {
+      return count++;
+    };
+  }
+
+  /**
+ * @param {number} value
+ * @return {Function}
+ */
+export default function makeCounter(value = 0) {
+    return () => value++;
+  }

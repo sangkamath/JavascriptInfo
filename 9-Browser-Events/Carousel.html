@@ -45,6 +45,16 @@
     let position = 0; // ribbon scroll position
 
     carousel.querySelector('.prev').onclick = function() {
+
+      /*
+      console.log(list.style.marginLeft == "0px");
+      if(list.style.marginLeft === "0px" ) {
+        position =  -width * (listElems.length - count);
+        list.style.marginLeft = -width * (listElems.length - count) + 'px';
+        return;
+      }
+        */
+    
       // shift left
       position += width * count;
       // can't move to the left too much, end of images
@@ -53,6 +63,14 @@
     };
 
     carousel.querySelector('.next').onclick = function() {
+      /*
+      if(list.style.marginLeft == -width * (listElems.length - count) + "px" ) {
+        position = 0;
+        list.style.marginLeft = 0 + 'px';
+        return;
+      }
+        */
+      
       // shift right
       position -= width * count;
       // can only shift the ribbbon for (total ribbon length - visible count) images
