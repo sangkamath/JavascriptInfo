@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+        body {
+            font-family: sans-serif;
+        }
+
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .progress {
+            background-color: rgb(233, 236, 239);
+            border: 1px solid #c5c5c5;
+            border-radius: 8px;
+            height: 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            background-color: #0d6efd;
+            color: #fff;
+            height: 100%;
+            overflow: hidden;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="wrapper">
+        <div id="progress-0" class="progress"></div>
+        <div id="progress-25" class="progress"></div>
+        <div id="progress-50" class="progress"></div>
+        <div id="progress-75" class="progress"></div>
+        <div id="progress-100" class="progress"></div>
+        <div id="progress-2" class="progress"></div>
+        <div id="progress--10" class="progress"></div>
+        <div id="progress-120" class="progress"></div>
+        <hr />
+        <label>
+            <div>Control progress</div>
+            <input type="range" min="0" max="100" value="50" id="slider" />
+        </label>
+        <div id="progress-slider" class="progress"></div>
+    </div>
+
+    <script>
+        (() => {
+            function progressBar($rootElement, initialValue) {
+                const MIN = 0;
+                const MAX = 100;
+                $rootElement.classList.add('progress');
+
+                const $progressBarEl = document.createElement('div');
+                $progressBarEl.className = 'progress-bar';
+                // Set attributes for a11y.
+                $progressBarEl.setAttribute('role', 'progressbar');
+                $progressBarEl.setAttribute('aria-valuemin', MIN);
+                $progressBarEl.setAttribute('aria-valuemax', MAX);
+
+                function setValue(value) {
+                    // Handle invalid values and convert them to be within [0, 100].
+                    const clampedValue = Math.min(
+                        Math.max(value, MIN),
+                        MAX,
+                    );
+
+                    $progressBarEl.style.width = `${clampedValue}%`;
+                    $progressBarEl.textContent = `${clampedValue}%`;
+                    $progressBarEl.setAttribute(
+                        'aria-valuenow',
+                        clampedValue,
+                    );
+                }
+
+                $rootElement.appendChild($progressBarEl);
+                setValue(initialValue);
+
+                return {
+                    setValue,
+                };
+            }
+
+            // Initialize some examples.
+            progressBar(document.querySelector('#progress-0'), 0);
+            progressBar(document.querySelector('#progress-25'), 25);
+            progressBar(document.querySelector('#progress-50'), 50);
+            progressBar(document.querySelector('#progress-75'), 75);
+            progressBar(document.querySelector('#progress-100'), 100);
+            progressBar(document.querySelector('#progress-2'), 2);
+            progressBar(document.querySelector('#progress--10'), -10);
+            progressBar(document.querySelector('#progress-120'), 120);
+
+            // Initialize the slider example which controls the progress of
+            // the progress bar below.
+            const progressSlider = progressBar(
+                document.querySelector('#progress-slider'),
+                50,
+            );
+
+            document
+                .querySelector('#slider')
+                .addEventListener('change', (event) => {
+                    progressSlider.setValue(event.target.value);
+                });
+        })();
+
+    </script>
+</body>
+
+</html>

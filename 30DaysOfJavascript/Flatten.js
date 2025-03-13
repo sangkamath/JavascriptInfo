@@ -1,6 +1,28 @@
 /**
  * @param {Array<*|Array>} value
  * @return {Array}
+ * Time Complexity:
+The time complexity of this function can be analyzed based on the 
+number of elements in the input array. If we denote the total number 
+of elements in the nested array as `n`, the function will visit 
+each element exactly once. In the worst case, where every element
+ is an array, the function will recursively call itself for each 
+ of those arrays. However, since each element is processed once, 
+ the overall time complexity remains O(n), where n is the total
+  number of elements across all levels of nesting.
+
+Space Complexity:
+The space complexity of the function is influenced by both the 
+recursion stack and the space needed to store the result. The
+ maximum depth of the recursion stack can be equal to the depth 
+ of the nested arrays. In the worst case, if the input is a 
+ deeply nested array, the recursion stack could grow to O(d),
+  where d is the maximum depth of the nesting. Additionally,
+   the space required to store the flattened result is O(n),
+    as it needs to hold all the elements from the input. 
+    Therefore, the overall space complexity is O(n + d), but 
+    since n is typically larger than d, it is often simplified 
+    to O(n).
  */
 
 export default function flatten(value) {
