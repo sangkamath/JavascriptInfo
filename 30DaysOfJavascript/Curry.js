@@ -175,6 +175,7 @@ export default function curry(func) {
 
     return curried.bind(this, ...args);
   };
+}
   /*
 Step-by-Step Explanation
 Function Definition & Parameters:
