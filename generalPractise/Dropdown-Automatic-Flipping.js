@@ -49,6 +49,7 @@ function Menu({ buttonEl }) {
   const [, setForceUpdate] = useState(0);
 
   // See https://beta.reactjs.org/reference/react/useLayoutEffect
+  //Runs before painting to measure the menu height.
   useLayoutEffect(() => {
     const { height } = menuRef.current?.getBoundingClientRect();
     setMenuHeight(height);
@@ -78,6 +79,7 @@ function Menu({ buttonEl }) {
     // Debounce the listener for better
     // scroll performance.
     // Should also listen for window resize events.
+    //trigger re-rendering.
     window.addEventListener("scroll", updateMenuPosition);
 
     return () => {
