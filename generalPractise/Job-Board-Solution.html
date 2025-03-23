@@ -1,0 +1,209 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #f6f6ef;
+            color: #000;
+            font-family: sans-serif;
+            font-size: 16px;
+            padding: 16px;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .app {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff6600;
+            margin-bottom: 24px;
+        }
+
+        .jobs {
+            display: grid;
+            row-gap: 16px;
+        }
+
+        .post {
+            background-color: #fff;
+            border: 1px solid #dcdcdc;
+            border-radius: 4px;
+            padding: 16px;
+            display: grid;
+            row-gap: 8px;
+        }
+
+        .post__title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 0;
+        }
+
+        .post__metadata {
+            font-size: 14px;
+            color: #444;
+        }
+
+        .loading {
+            color: #4d4d4d;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .load-more-button {
+            background-color: #ff6600;
+            border: none;
+            border-radius: 4px;
+            color: #fff;
+            margin-top: 20px;
+            padding: 8px 12px;
+        }
+
+        .load-more-button:not(:disabled) {
+            cursor: pointer;
+        }
+
+        .load-more-button:hover {
+            background-color: #e65c00;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app">
+        <h1 class="title">Hacker News Jobs Board</h1>
+        <p class="loading">Loading...</p>
+        <div id="job-list-container" hidden>
+            <div class="jobs" role="list"></div>
+            <button class="load-more-button"></button>
+        </div>
+    </div>
+    <template id="job-posting-template">
+        <div class="post" role="listitem">
+            <h2 class="post__title"></h2>
+            <p class="post__metadata">
+                By <span class="post__author"></span> &middot;
+                <span class="post__timestamp"></span>
+            </p>
+        </div>
+    </template>
+    <script>
+        (() => {
+            const PAGE_SIZE = 6;
+            const $loadingEl = document.querySelector('.loading');
+            const $jobListContainerEl = document.querySelector(
+                '#job-list-container',
+            );
+            const $jobList = document.querySelector('.jobs');
+            const $loadMoreButtonEl = document.querySelector(
+                '.load-more-button',
+            );
+            let jobIds = null;
+            let page = 0;
+
+            async function fetchJobIds(currPage) {
+                let jobs = jobIds;
+                if (!jobs) {
+                    const res = await fetch(
+                        'https://hacker-news.firebaseio.com/v0/jobstories.json',
+                    );
+                    jobIds = await res.json();
+                }
+
+                const start = currPage * PAGE_SIZE;
+                const end = start + PAGE_SIZE;
+
+                return jobIds.slice(start, end);
+            }
+
+            async function fetchJobs(currPage) {
+                const jobIdsForPage = await fetchJobIds(currPage);
+
+                setFetchingJobDetails(true);
+                const jobsForPage = await Promise.all(
+                    jobIdsForPage.map((jobId) =>
+                        fetch(
+                            `https://hacker-news.firebaseio.com/v0/item/${jobId}.json`,
+                        ).then((res) => res.json()),
+                    ),
+                );
+                appendJobs(jobsForPage);
+
+                setFetchingJobDetails(false);
+
+                $loadingEl.hidden = true;
+                $jobListContainerEl.hidden = false;
+            }
+
+            function setFetchingJobDetails(fetching) {
+                $loadMoreButtonEl.disabled = fetching;
+                $loadMoreButtonEl.textContent = fetching
+                    ? 'Loading...'
+                    : 'Load more';
+            }
+
+            function appendJobs(jobs) {
+                const $fragmentEl = document.createDocumentFragment();
+                console.log(jobs);
+                console.log(...jobs);
+                $fragmentEl.append(...jobs.map(createJobPostingEl));
+                $jobList.append($fragmentEl);
+            }
+
+            function createJobPostingEl(job) {
+                const $templateEl = document.getElementById(
+                    'job-posting-template',
+                );
+                const $post = $templateEl.content.cloneNode(true);
+
+                if (job.url) {
+                    const $link = document.createElement('a');
+                    $link.href = job.url;
+                    $link.textContent = job.title;
+                    $post
+                        .querySelector('.post__title')
+                        .appendChild($link);
+                } else {
+                    $post.querySelector('.post__title').textContent =
+                        job.title;
+                }
+
+                $post.querySelector('.post__author').textContent =
+                    job.by;
+                $post.querySelector('.post__timestamp').textContent =
+                    new Date(job.time * 1000).toLocaleString();
+
+                return $post;
+            }
+
+            $loadMoreButtonEl.addEventListener('click', () => {
+                fetchJobs(++page);
+            });
+
+            fetchJobs(page);
+        })();
+
+    </script>
+</body>
+
+</html>

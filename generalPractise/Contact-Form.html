@@ -1,0 +1,93 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+        body {
+            font-family: sans-serif;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            row-gap: 12px;
+        }
+
+        label {
+            font-size: 12px;
+        }
+
+        input,
+        textarea {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <form action="https://www.greatfrontend.com/api/questions/contact-form" method="post">
+        <div>
+            <label for="name-input">Name</label>
+            <input id="name-input" name="name" type="text" />
+        </div>
+        <div>
+            <label for="email-input">Email</label>
+            <input id="email-input" name="email" type="email" />
+        </div>
+        <div>
+            <label for="message-input">Message</label>
+            <textarea id="message-input" name="message"></textarea>
+        </div>
+        <div>
+            <button>Send</button>
+        </div>
+    </form>
+    <!-- You can ignore this file, it is only used by GFE to
+      intercept the form submission event. -->
+    <script>
+        (() => {
+            const SUBMIT_URL =
+                'https://www.greatfrontend.com/api/questions/contact-form';
+
+            const $form = document.querySelector('form');
+            $form.addEventListener('submit', async (event) => {
+                event.preventDefault();
+
+                if ($form.action !== SUBMIT_URL) {
+                    alert('Incorrect form action value');
+                    return;
+                }
+
+                if ($form.method.toLowerCase() !== 'post') {
+                    alert('Incorrect form method value');
+                    return;
+                }
+
+                try {
+                    const formData = new FormData($form);
+                    const response = await fetch(SUBMIT_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            name: formData.get('name'),
+                            email: formData.get('email'),
+                            message: formData.get('message'),
+                        }),
+                    });
+
+                    const text = await response.text();
+                    alert(text);
+                } catch (_) {
+                    alert('Error submitting form!');
+                }
+            });
+        })();
+
+    </script>
+</body>
+
+</html>
