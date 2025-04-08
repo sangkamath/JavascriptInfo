@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Card Flip with Transitions</title>
+    <style>
+        /* Style for the card container */
+        .card {
+            width: 300px;
+            height: 400px;
+            perspective: 1000px;
+            /* This gives a 3D effect */
+            margin: 50px;
+        }
+
+        /* Style for the actual card that will flip */
+        .card-inner {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            /* Allows children to be positioned in 3D space */
+            transition: transform 2s;
+            /* Smooth flip transition */
+        }
+
+        /* Front and back faces of the card */
+        .front,
+        .back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            /* Hides the back face when flipped */
+            transition: opacity 2s ease;
+            /* Smooth fade transition */
+        }
+
+        /* Style for the front face of the card */
+        .front {
+            background-color: #4CAF50;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 24px;
+        }
+
+        /* Style for the back face of the card */
+        .back {
+            background-color: #f44336;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 24px;
+            transform: rotateY(180deg);
+            /* Initially hide the back */
+        }
+
+        /* Hover effect to flip the card */
+        .card:hover .card-inner {
+            transform: rotateY(180deg);
+            /* Flip the card on hover */
+        }
+
+        /* Fade out the front and fade in the back */
+        .card:hover .front {
+            opacity: 0.5;
+            /* Fade out the front */
+        }
+
+        .card:hover .back {
+            opacity: 0;
+            /* Fade in the back */
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Card container with the flipping effect -->
+    <div class="card">
+        <div class="card-inner">
+            <div class="front">
+                Front Face
+            </div>
+            <div class="back">
+                Back Face
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
