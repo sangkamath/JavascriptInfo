@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Flight Booker</title>
+    <style>
+        body {
+            font-family: sans-serif;
+        }
+
+        .flight-booker {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-width: 320px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+
+<body>
+    <form class="flight-booker" id="flightForm">
+        <select id="flightOption">
+            <option value="one-way">One-way flight</option>
+            <option value="return">Return flight</option>
+        </select>
+
+        <input type="date" id="departureDate" aria-label="Departure date" />
+
+        <input type="date" id="returnDate" aria-label="Return date" style="display: none;" />
+
+        <button type="submit">Book</button>
+    </form>
+
+    <script>
+        function formatDate(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, "0");
+            const day = String(date.getDate()).padStart(2, "0");
+            return `${year}-${month}-${day}`;
+        }
+
+        const DAY_IN_MS = 24 * 60 * 60 * 1000;
+        const today = new Date();
+        const tomorrow = new Date(today.getTime() + DAY_IN_MS);
+
+        const TODAY_STRING = formatDate(today);
+        const TOMORROW_STRING = formatDate(tomorrow);
+
+        const flightOption = document.getElementById("flightOption");
+        const departureDate = document.getElementById("departureDate");
+        const returnDate = document.getElementById("returnDate");
+        const flightForm = document.getElementById("flightForm");
+
+        // Set initial values
+        departureDate.min = TODAY_STRING;
+        departureDate.value = TOMORROW_STRING;
+        returnDate.min = TOMORROW_STRING;
+        returnDate.value = TOMORROW_STRING;
+
+        // Handle flight type toggle
+        flightOption.addEventListener("change", () => {
+            if (flightOption.value === "return") {
+                returnDate.style.display = "block";
+            } else {
+                returnDate.style.display = "none";
+            }
+        });
+
+        // Handle departure date change
+        departureDate.addEventListener("change", () => {
+            returnDate.min = departureDate.value;
+            if (returnDate.value < departureDate.value) {
+                returnDate.value = departureDate.value;
+            }
+        });
+
+        flightForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+
+            const dep = departureDate.value;
+            const ret = returnDate.value;
+
+            if (flightOption.value === "one-way") {
+                alert(`You have booked a one-way flight on ${dep}`);
+            } else {
+                alert(
+                    `You have booked a return flight, departing on ${dep} and returning on ${ret}`
+                );
+            }
+        });
+
+    </script>
+</body>
+
+</html>
