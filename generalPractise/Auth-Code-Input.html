@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Auth Code Input</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+        }
+
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .flex-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .input-box {
+            --size: 3rem;
+            height: var(--size);
+            width: var(--size);
+            text-align: center;
+            border: none;
+            outline: none;
+            background: #eee;
+            font-weight: 600;
+            font-size: 1.5rem;
+        }
+
+        .input-box::selection {
+            background-color: #000;
+            color: #fff;
+        }
+
+        .input-box:focus {
+            color: #000;
+            outline: 2px solid #000;
+        }
+
+        .input-box:disabled {
+            cursor: not-allowed;
+        }
+
+        .button {
+            border: 2px solid black;
+            outline: none;
+            padding: 0.5rem 1.5rem;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .button:focus {
+            outline: 2px solid #000;
+            outline-offset: 1px;
+        }
+
+        .button:disabled {
+            opacity: 0.25;
+            cursor: not-allowed;
+            transition: all 0.3s linear;
+        }
+
+        .button--primary {
+            background-color: #000;
+            color: #fff;
+        }
+
+        .button--secondary {
+            background-color: transparent;
+            color: black;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <form class="container" id="code-form">
+            <div class="flex-container" id="code-inputs"></div>
+            <div class="flex-container">
+                <button type="button" class="button button--secondary" id="reset-button" disabled>
+                    Reset
+                </button>
+                <button type="submit" class="button button--primary" id="submit-button" disabled>
+                    Submit
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const CODE_LENGTH = 6;
+        const code = Array(CODE_LENGTH).fill('');
+        let focusedIndex = 0;
+
+        const codeInputs = document.getElementById('code-inputs');
+        const submitButton = document.getElementById('submit-button');
+        const resetButton = document.getElementById('reset-button');
+
+        const inputElements = [];
+
+        function updateButtons() {
+            const filled = code.every((digit) => digit);
+            const anyFilled = code.some((digit) => digit);
+            submitButton.disabled = !filled;
+            resetButton.disabled = !anyFilled;
+        }
+
+        function clamp(index) {
+            return Math.max(0, Math.min(index, CODE_LENGTH - 1));
+        }
+
+        function handleKeyDown(e, index) {
+            if (e.key === 'Backspace') {
+                e.preventDefault();
+                if (code[index]) {
+                    code[index] = '';
+                    inputElements[index].value = '';
+                } else if (index > 0) {
+                    code[index - 1] = '';
+                    inputElements[index - 1].value = '';
+                    inputElements[clamp(index - 1)].focus();
+                }
+                updateButtons();
+            } else if (e.key === 'ArrowLeft') {
+                inputElements[clamp(index - 1)].focus();
+            } else if (e.key === 'ArrowRight') {
+                inputElements[clamp(index + 1)].focus();
+            }
+        }
+
+        function handleInput(e, index) {
+            const value = e.target.value.replace(/\D/g, '');
+            if (value) {
+                code[index] = value[0];
+                inputElements[index].value = value[0];
+                if (index < CODE_LENGTH - 1) {
+                    inputElements[index + 1].focus();
+                }
+            } else {
+                code[index] = '';
+            }
+            updateButtons();
+        }
+
+        function handlePaste(e) {
+            e.preventDefault();
+            const pasted = e.clipboardData.getData('text').replace(/\D/g, '');
+            for (let i = 0; i < CODE_LENGTH; i++) {
+                const digit = pasted[i] ?? '';
+                code[i] = digit;
+                inputElements[i].value = digit;
+            }
+            inputElements[clamp(pasted.length)].focus();
+            updateButtons();
+        }
+
+        function createInputs() {
+            for (let i = 0; i < CODE_LENGTH; i++) {
+                const input = document.createElement('input');
+                input.className = 'input-box';
+                input.maxLength = 1;
+                input.type = 'text';
+                input.inputMode = 'numeric';
+                input.autocomplete = 'one-time-code';
+
+                input.addEventListener('focus', () => {
+                    focusedIndex = i;
+                });
+
+                input.addEventListener('keydown', (e) => handleKeyDown(e, i));
+                input.addEventListener('input', (e) => handleInput(e, i));
+                input.addEventListener('paste', handlePaste);
+
+                inputElements.push(input);
+                codeInputs.appendChild(input);
+            }
+        }
+
+        document.getElementById('code-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            fetch(
+                'https://questions.greatfrontend.com/api/questions/auth-code-input',
+                {
+                    method: 'POST',
+                    body: JSON.stringify({ otp: code.join("") }),
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                },
+            )
+                .then((res) => res.text())
+                .then((res) => alert(res))
+                .catch(() =>
+                    alert(
+                        'Something went wrong. Please try again later.',
+                    ),
+                )
+        });
+
+        resetButton.addEventListener('click', () => {
+            for (let i = 0; i < CODE_LENGTH; i++) {
+                code[i] = '';
+                inputElements[i].value = '';
+            }
+            inputElements[0].focus();
+            updateButtons();
+        });
+
+        createInputs();
+    </script>
+</body>
+
+</html>
